@@ -1,17 +1,26 @@
 package com.sky.service.impl;
 
 import com.sky.constant.MessageConstant;
+import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.properties.JwtProperties;
 import com.sky.service.EmployeeService;
+import com.sky.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -55,4 +64,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /**
+     * 新增員工
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-19 17:49:18 Version:1.0
+     * change Description:
+     */
+    @Override
+    public void save(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        employee.setStatus(StatusConstant.ENABLE);
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        // TODO
+        employee.setCreateUser(10L);
+        employee.setUpdateUser(10L);
+
+        employeeMapper.insert(employee);
+    }
 }

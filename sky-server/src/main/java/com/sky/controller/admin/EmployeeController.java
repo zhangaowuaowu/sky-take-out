@@ -14,7 +14,9 @@ import com.sky.vo.EmployeeLoginVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -88,6 +90,7 @@ public class EmployeeController {
      */
     @PostMapping
     @ApiOperation("新增員工")
+    @Transactional(rollbackFor = Exception.class)
     public Result save(@RequestBody EmployeeDTO employeeDTO) {
         log.info("新增員工 {}", employeeDTO);
         employeeService.save(employeeDTO);
@@ -108,5 +111,60 @@ public class EmployeeController {
     public Result<PageResult> page(EmployeePageQueryDTO dto) {
         PageResult pageResult = employeeService.pageQuery(dto);
         return Result.success(pageResult);
+    }
+    
+    /**
+     * 啓用/禁用員工
+     *
+     * @param
+     * @return 
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:25:31 Version:1.0
+     * change Description:
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("啓用禁用員工帳號")
+    @Transactional(rollbackFor = Exception.class)
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        employeeService.startOrStop(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查询员工
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:42:47 Version:1.0
+     * change Description:
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询员工")
+    public Result<Employee> selectById(@PathVariable Long id) {
+        Employee employee = employeeService.selectById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 更新員工資料
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:55:34 Version:1.0
+     * change Description:
+     */
+    @PutMapping
+    @ApiOperation("更新員工資料")
+    @Transactional(rollbackFor = Exception.class)
+    public Result updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employeeService.updateEmployee(employee);
+        return Result.success("更新成功");
     }
 }

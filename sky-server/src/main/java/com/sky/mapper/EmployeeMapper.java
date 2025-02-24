@@ -44,4 +44,29 @@ public interface EmployeeMapper {
      * change Description:
      */
     Page<Employee> pageQuery(EmployeePageQueryDTO dto);
+
+    /**
+     * 啓用/禁用員工
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:25:31 Version:1.0
+     * change Description:
+     */
+    void update(Employee employee);
+
+    /**
+     * 根据id查询员工
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:42:47 Version:1.0
+     * change Description:
+     */
+    @Select("select * from employee where id = #{id}")
+    Employee selectById(Long id);
 }

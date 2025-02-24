@@ -111,4 +111,56 @@ public class EmployeeServiceImpl implements EmployeeService {
         pageResult.setRecords(page.getResult());
         return pageResult;
     }
+
+    /**
+     * 啓用/禁用員工
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:25:31 Version:1.0
+     * change Description:
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        Employee employee = new Employee();
+        employee.setStatus(status);
+        employee.setId(id);
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id查询员工
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:42:47 Version:1.0
+     * change Description:
+     */
+    @Override
+    public Employee selectById(Long id) {
+        Employee employee = employeeMapper.selectById(id);
+        employee.setPassword("****");
+        return employee;
+    }
+
+    /**
+     * 更新員工資料
+     *
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-24 17:55:34 Version:1.0
+     * change Description:
+     */
+    @Override
+    public void updateEmployee(Employee employee) {
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
+    }
 }

@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
+import com.sky.properties.GcpProperties;
 import com.sky.service.GcpStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,10 @@ public class GcpStorageServiceImpl implements GcpStorageService {
     private final Storage storage;
     private final String bucketName;
 
-    public GcpStorageServiceImpl(@Value("${gcp.credentials.file}") String credentialsFilePath,
-                                 @Value("${gcp.bucket.name}") String bucketName) throws IOException {
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsFilePath));
+    public GcpStorageServiceImpl(GcpProperties gcpProperties) throws IOException {
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(gcpProperties.getCredentialsFilePath()));
         this.storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-        this.bucketName = bucketName;
+        this.bucketName = gcpProperties.getBucketName();
     }
 
     @Override

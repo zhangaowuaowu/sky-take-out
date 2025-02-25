@@ -42,3 +42,10 @@ sky:
 knife4j:
   enable: true
   production: false
+
+#GCP storage
+gcp:
+  credentials:
+    file: ${gcp.credentials.file}
+  bucket:
+    name: ${gcp.bucket.name}

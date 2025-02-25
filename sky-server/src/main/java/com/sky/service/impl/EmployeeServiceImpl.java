@@ -82,12 +82,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setStatus(StatusConstant.ENABLE);
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
 
-        Long empId = BaseContext.getCurrentId();
-        employee.setCreateUser(empId);
-        employee.setUpdateUser(empId);
+//        Long empId = BaseContext.getCurrentId();
+//        employee.setCreateUser(empId);
+//        employee.setUpdateUser(empId);
 
         employeeMapper.insert(employee);
     }
@@ -159,8 +159,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void updateEmployee(Employee employee) {
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);
     }
 }

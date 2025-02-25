@@ -30,6 +30,7 @@
         <jjwt>0.9.1</jjwt>
         <jaxb-api>2.3.1</jaxb-api>
         <poi>3.16</poi>
+        <storage>2.27.0</storage>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -121,6 +122,12 @@
                 <groupId>com.github.wechatpay-apiv3</groupId>
                 <artifactId>wechatpay-apache-httpclient</artifactId>
                 <version>0.4.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>google-cloud-storage</artifactId>
+                <version>${storage}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

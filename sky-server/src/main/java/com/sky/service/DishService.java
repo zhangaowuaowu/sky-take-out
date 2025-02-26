@@ -75,4 +75,15 @@ public interface DishService {
      * change Description:
      */
     void update(DishDTO dto);
+
+    /**
+     * 菜品起售停售
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-26 14:21:51 Version:1.0
+     * change Description:
+     */
+    void startOrStopDish(Integer status, Long id);
 }

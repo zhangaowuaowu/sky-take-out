@@ -10,20 +10,18 @@ import com.sky.service.DishService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/dish")
 @Slf4j
-@Api("菜品相關接口")
+@Api(tags = "菜品相關接口")
 public class DishController {
 
     @Autowired
@@ -131,6 +129,23 @@ public class DishController {
     @Transactional(rollbackFor = Exception.class)
     public Result update(@RequestBody DishDTO dto) {
         dishService.update(dto);
+        return Result.success();
+    }
+
+    /**
+     * 菜品起售停售
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date: 2025-02-26 14:21:51 Version:1.0
+     * change Description:
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品起售停售")
+    @Transactional(rollbackFor = Exception.class)
+    public Result startOrStopDish(@PathVariable Integer status, Long id) {
+        dishService.startOrStopDish(status, id);
         return Result.success();
     }
 }

@@ -9,7 +9,5 @@ sky:
 
 #GCP storage
 gcp:
-  credentials:
-    file: ${GOOGLE_APPLICATION_CREDENTIALS}
-  bucket:
-    name: example-bucket1207
+  credentialsFilePath: C:\WorkSpace\config\gcp-storage-dev.json
+  bucketName: example-bucket1207

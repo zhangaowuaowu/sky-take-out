@@ -6,6 +6,25 @@
         insert into setmeal (category_id, name, price, status, description, image)
         values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image});
     </insert>
+    <update id="update">
+        UPDATE setmeal
+        <set>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="image != null">image = #{image},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteBatch">
+        delete from setmeal
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
         select t1.*,
@@ -24,5 +43,13 @@
                 and status = #{status}
             </if>
         </where>
+    </select>
+    <select id="selectById" resultType="com.sky.vo.SetmealVO">
+        select t1.*,
+               t2.name as category_name
+        from setmeal t1
+        left join category t2
+        on t1.category_id = t2.id
+        where t1.id = #{id}
     </select>
 </mapper>

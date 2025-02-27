@@ -14,5 +14,5 @@ sky:
 
 #GCP storage
 gcp:
-  credentialsFilePath: C:\WorkSpace\config\gcp-storage-dev.json
+  credentialsFilePath: D:\gcp-storage-dev.json
   bucketName: example-bucket1207

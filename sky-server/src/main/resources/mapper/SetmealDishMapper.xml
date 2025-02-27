@@ -9,6 +9,25 @@
             (#{item.setmealId}, #{item.dishId}, #{item.name}, #{item.price}, #{item.copies})
         </foreach>
     </insert>
+    <insert id="insertBatch">
+        INSERT INTO setmeal_dish (setmeal_id, dish_id, name, price, copies)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.setmealId}, #{item.dishId}, #{item.name}, #{item.price}, #{item.copies})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBySetmealId">
+        delete from setmeal_dish
+        where setmeal_id = #{setmealId}
+    </delete>
+    <delete id="deleteBySetmealIds">
+        delete from setmeal_dish
+        where setmeal_id in
+        <foreach collection="setmealIds" item="setmealId" separator="," open="(" close=")">
+            #{setmealId}
+        </foreach>
+    </delete>
 
     <select id="selectByDishId" resultType="java.lang.Long">
         select setmeal_id from setmeal_dish
@@ -16,5 +35,9 @@
         <foreach collection="ids" separator="," open="(" close=")" item="id">
             #{id}
         </foreach>
+    </select>
+    <select id="selectBySetmealId" resultType="com.sky.entity.SetmealDish">
+        select * from setmeal_dish
+        where setmeal_id = #{id}
     </select>
 </mapper>

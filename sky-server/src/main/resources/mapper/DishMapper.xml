@@ -43,4 +43,22 @@
             </if>
         </where>
     </select>
+    <select id="list" resultType="com.sky.entity.Dish">
+        select t1.*,
+        t2.name as category_name
+        from dish t1
+        left join category t2
+        on t1.category_id = t2.id
+        <where>
+            <if test="categoryId != null">
+                and t1.category_id = #{categoryId}
+            </if>
+            <if test="name != null">
+                and t1.name like concat('%', #{name}, '%')
+            </if>
+            <if test="status != null">
+                and t1.status = #{status}
+            </if>
+        </where>
+    </select>
 </mapper>

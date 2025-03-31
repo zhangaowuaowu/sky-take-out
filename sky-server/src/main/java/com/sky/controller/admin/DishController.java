@@ -12,10 +12,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,6 +28,8 @@ public class DishController {
 
     @Autowired
     private DishService dishService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品
@@ -41,6 +45,10 @@ public class DishController {
     @Transactional(rollbackFor = Exception.class)
     public Result save (@RequestBody DishDTO dto) {
         dishService.saveWithFlavor(dto);
+
+        // 新增時清理緩存數據
+        String key = "dish_" + dto.getCategoryId();
+        this.clearCache(key);
         return Result.success();
     }
 
@@ -72,13 +80,26 @@ public class DishController {
     @GetMapping("/list")
     @ApiOperation("分類id查詢菜品")
     public Result<List<Dish>> list (Integer categoryId) {
+        // 使用redis做緩存
+        // 構造redis中的key，規則：dish_分類id
+        String key = "dish_" + categoryId;
+
+        // 查詢redis中是否存在菜品數據
+        List<Dish> dishList = (List<Dish>) redisTemplate.opsForValue().get(key);
+        if (dishList != null && dishList.size() > 0) {
+            // 如果存在，直接回傳redis中資料。
+            return Result.success(dishList);
+        }
+
+        // 如果不存在則查詢數據庫，并且放入redis中。
         List<DishVO> dishVOList = dishService.list(categoryId);
         // 暫時用spring原生的方法來做list轉換
-        List<Dish> dishList = dishVOList.stream().map(dishVO -> {
+        dishList = dishVOList.stream().map(dishVO -> {
             Dish dish = new Dish();
             BeanUtils.copyProperties(dishVO, dish);
             return dish;
         }).collect(Collectors.toList());
+        redisTemplate.opsForValue().set(key, dishList);
         return Result.success(dishList);
     }
 
@@ -112,6 +133,9 @@ public class DishController {
     @Transactional(rollbackFor = Exception.class)
     public Result delete(@RequestParam List<Long> ids){
         dishService.deleteBatch(ids);
+
+        // 刪除時清空緩存
+        this.clearCache("dish_*");
         return Result.success();
     }
 
@@ -129,6 +153,9 @@ public class DishController {
     @Transactional(rollbackFor = Exception.class)
     public Result update(@RequestBody DishDTO dto) {
         dishService.update(dto);
+
+        // 刪除時清空緩存
+        this.clearCache("dish_*");
         return Result.success();
     }
 
@@ -146,6 +173,14 @@ public class DishController {
     @Transactional(rollbackFor = Exception.class)
     public Result startOrStopDish(@PathVariable Integer status, Long id) {
         dishService.startOrStopDish(status, id);
+
+        // 刪除時清空緩存
+        this.clearCache("dish_*");
         return Result.success();
+    }
+
+    private void clearCache(String pattern) {
+        Set keys = redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
     }
 }

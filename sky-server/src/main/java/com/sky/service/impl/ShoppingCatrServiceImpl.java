@@ -70,4 +70,37 @@ public class ShoppingCatrServiceImpl implements ShoppingCatrService {
             shoppingCartMapper.insert(shopingCart);
         }
     }
+
+    /**
+     * 查詢購物車
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date:  Version:1.0
+     * change Description:
+     */
+    @Override
+    public List<ShoppingCart> showShoppingCart() {
+        Long userId = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUserId(userId);
+        List<ShoppingCart> cartList= shoppingCartMapper.list(shoppingCart);
+        return cartList;
+    }
+
+    /**
+     * 清空購物車
+     * @param
+     * @return
+     * @author 刁卓
+     * Change History:
+     * Last Modify author :刁卓 Date:  Version:1.0
+     * change Description:
+     */
+    @Override
+    public void cleanShoppingCart() {
+        Long userId = BaseContext.getCurrentId();
+        shoppingCartMapper.deleteByUserId(userId);
+    }
 }
